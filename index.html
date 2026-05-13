@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南庄·山間拾筍 | 來自海拔 800 公尺的清甜</title>
+    <!-- Google Fonts: Noto Serif TC for elegant titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #4F7942;
+            --deep-forest: #1A2421;
+            --soft-beige: #FCFBF7;
+            --accent-green: #2D4F1E;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--soft-beige);
+            color: var(--deep-forest);
+            letter-spacing: 0.05em;
+        }
+
+        .serif {
+            font-family: 'Noto Serif TC', serif;
+            letter-spacing: 0.1em;
+        }
+
+        .hero-gradient {
+            /* 更換為更有山林包裹感的圖片：迷霧竹林 */
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&q=80&w=1600');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .glass-nav {
+            backdrop-filter: blur(8px);
+            background-color: rgba(252, 251, 247, 0.85);
+        }
+
+        .cart-sidebar {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .item-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--soft-beige);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-stone-200/60">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-[#4F7942] rounded-full flex items-center justify-center text-white">
+                    <i class="fa-solid fa-leaf text-sm"></i>
+                </div>
+                <h1 class="serif text-xl font-bold tracking-widest text-[#4F7942]">山間拾筍</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-10 text-sm font-medium tracking-widest uppercase text-[#1A2421]">
+                <a href="#story" class="hover:text-[#4F7942] transition-colors">產地故事</a>
+                <a href="#products" class="hover:text-[#4F7942] transition-colors">選購筍品</a>
+                <a href="#contact" class="hover:text-[#4F7942] transition-colors">聯絡我們</a>
+            </div>
+
+            <button onclick="toggleCart()" class="relative p-2 hover:scale-110 transition-transform">
+                <i class="fa-solid fa-cart-shopping text-xl text-[#4F7942]"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 英雄區 (Hero Section) -->
+    <header class="relative h-screen flex items-center justify-center text-center px-4 hero-gradient">
+        <div class="z-10 text-white">
+            <p class="serif mb-4 text-lg md:text-xl tracking-[0.3em] uppercase opacity-90">南庄鹿場地區直送</p>
+            <h2 class="serif text-5xl md:text-7xl font-bold mb-8 leading-tight">海拔 800 公尺的<br><span class="text-[#D0E2B7]">雨後清甜</span></h2>
+            
+            <!-- 產季倒計時 -->
+            <div id="countdown" class="mb-10 bg-[#1A2421]/40 backdrop-blur-md inline-flex gap-6 p-5 rounded-2xl border border-white/10">
+                <div class="text-center">
+                    <span id="days" class="block text-3xl font-bold">00</span>
+                    <span class="text-[10px] uppercase opacity-70 tracking-widest">天</span>
+                </div>
+                <div class="w-px bg-white/20 h-10 my-auto"></div>
+                <div class="text-center">
+                    <span id="hours" class="block text-3xl font-bold">00</span>
+                    <span class="text-[10px] uppercase opacity-70 tracking-widest">時</span>
+                </div>
+                <div class="text-center text-[#D0E2B7]">
+                    <span class="block text-sm font-bold mt-2 serif">產季剩餘</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-5 justify-center">
+                <a href="#products" class="bg-[#4F7942] text-white px-12 py-4 rounded-full serif hover:bg-[#2D4F1E] transition shadow-lg shadow-black/20">立即預訂鮮筍</a>
+                <a href="#story" class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-12 py-4 rounded-full serif hover:bg-white/20 transition">走入鹿場林間</a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 animate-bounce">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </header>
+
+    <!-- 產地故事 -->
+    <section id="story" class="py-32 px-6 max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-20 items-center">
+            <div class="relative">
+                <div class="absolute -top-10 -left-10 w-40 h-40 bg-[#F1F5EF] rounded-full -z-10"></div>
+                <!-- 故事圖片：南庄深山霧氣 -->
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800" alt="南庄山林霧氣" class="rounded-3xl shadow-2xl grayscale-[0.2] hover:grayscale-0 transition duration-1000 h-[500px] w-full object-cover">
+                <div class="absolute -bottom-8 -right-8 bg-[#1A2421] p-8 rounded-2xl shadow-2xl hidden md:block text-white">
+                    <p class="serif text-[#D0E2B7] font-bold text-xl tracking-widest">鹿場部落</p>
+                    <p class="text-[10px] text-white/50 mt-1 uppercase tracking-tighter font-light">Average 18°C / Misty Forest</p>
+                </div>
+            </div>
+            <div>
+                <span class="text-[#4F7942] serif text-sm tracking-[0.3em] font-bold block mb-4 uppercase">Origin Story</span>
+                <h3 class="serif text-4xl mb-8 text-[#1A2421] leading-snug">在雲霧深處，<br>聽見竹筍拔節的聲音</h3>
+                <p class="text-stone-600 leading-loose mb-10 text-lg font-light">
+                    南庄鹿場，一個與世隔絕的泰雅族部落。這裡的桂竹筍生長在冷涼的高海拔區域，吸收山間清晨的露水與紅土營養，質地比平地更為纖細鮮脆。我們堅持不噴灑除草劑，每一根筍都是農民踏著濕滑泥土，手採而來。
+                </p>
+                <div class="flex gap-6 items-center text-[#4F7942] font-medium serif border-l-4 border-[#4F7942]/20 pl-6">
+                    <i class="fa-solid fa-quote-left opacity-20 text-5xl"></i>
+                    <span class="text-xl italic">「我們不只賣筍，是把南庄的山風送到你桌上。」</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 產地保證區 (深綠背景) -->
+    <section class="bg-[#1A2421] py-20">
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
+            <div class="flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-white/5 text-[#D0E2B7] rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-[#4F7942] group-hover:text-white transition-all duration-500">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <h4 class="serif font-bold mb-3 text-white tracking-widest">匠人手採確認</h4>
+                <p class="text-xs text-white/40 leading-loose px-4">保證人工篩選，僅採摘長度 30cm 內最嫩部分，確保口感無絲。</p>
+            </div>
+            <div class="flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-white/5 text-[#D0E2B7] rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-[#4F7942] group-hover:text-white transition-all duration-500">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <h4 class="serif font-bold mb-3 text-white tracking-widest">產地 24h 直供</h4>
+                <p class="text-xs text-white/40 leading-loose px-4">當晨採收，午後分級，透過冷鏈直送，翌日抵達您的廚房。</p>
+            </div>
+            <div class="flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-white/5 text-[#D0E2B7] rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-[#4F7942] group-hover:text-white transition-all duration-500">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+                <h4 class="serif font-bold mb-3 text-white tracking-widest">純天然無添加</h4>
+                <p class="text-xs text-white/40 leading-loose px-4">不含防腐劑、不添加人工酸味劑，原色呈現最真實的山間風味。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 產品清單 -->
+    <section id="products" class="py-32 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-24">
+            <span class="text-[#4F7942] serif text-sm tracking-[0.3em] font-bold block mb-4 uppercase">Mountain Selection</span>
+            <h3 class="serif text-4xl mb-6 text-[#1A2421]">山間鮮物選</h3>
+            <div class="w-16 h-1 bg-[#4F7942] mx-auto rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- 產品 1: 生鮮筍 -->
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition duration-500 group border border-stone-100">
+                <div class="relative h-80 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1621460249253-91896894541e?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-1000">
+                    <span class="absolute top-6 left-6 bg-red-600 text-white text-[10px] px-4 py-1.5 rounded-full serif tracking-[0.2em] badge-pulse font-bold shadow-lg">季節限定・最後 50 斤</span>
+                </div>
+                <div class="p-10 text-center">
+                    <h4 class="serif text-2xl font-bold mb-4 text-[#1A2421]">現採生鮮桂竹筍</h4>
+                    <p class="text-stone-500 text-sm mb-8 leading-loose h-12 overflow-hidden">南庄鹿場晨間鮮採，未經殺青，最適合煮湯品嚐原始清甜。</p>
+                    <div class="flex flex-col gap-6">
+                        <span class="text-2xl font-bold text-[#4F7942] tracking-tighter">NT$ 380 <small class="text-xs text-stone-400 font-normal">/ 5台斤</small></span>
+                        <button onclick="addToCart('現採生鮮桂竹筍', 380)" class="bg-[#1A2421] text-white py-4 rounded-xl hover:bg-[#4F7942] transition-all duration-300 font-bold tracking-widest serif">加入採筍車</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 產品 2: 真空包裝 -->
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition duration-500 group border-2 border-[#1A2421]/5 hover:border-[#4F7942]/20">
+                <div class="relative h-80 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-1000">
+                    <span class="absolute top-6 left-6 bg-[#4F7942] text-white text-[10px] px-4 py-1.5 rounded-full serif tracking-[0.2em] font-bold shadow-lg">最佳銷量</span>
+                </div>
+                <div class="p-10 text-center">
+                    <h4 class="serif text-2xl font-bold mb-4 text-[#1A2421]">真空包裝熟筍</h4>
+                    <p class="text-stone-500 text-sm mb-8 leading-loose h-12 overflow-hidden">專業二次殺青技術，高溫殺菌，開封即刻料理。家庭主婦首選。</p>
+                    <div class="flex flex-col gap-6">
+                        <span class="text-2xl font-bold text-[#4F7942] tracking-tighter">NT$ 220 <small class="text-xs text-stone-400 font-normal">/ 1kg包</small></span>
+                        <button onclick="addToCart('真空包裝熟筍', 220)" class="bg-[#1A2421] text-white py-4 rounded-xl hover:bg-[#4F7942] transition-all duration-300 font-bold tracking-widest serif">加入採筍車</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 產品 3: 披薩 -->
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition duration-500 group border border-stone-100">
+                <div class="relative h-80 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-1000">
+                    <span class="absolute top-6 left-6 bg-teal-800 text-white text-[10px] px-4 py-1.5 rounded-full serif tracking-[0.2em] font-bold shadow-lg">農會推薦</span>
+                </div>
+                <div class="p-10 text-center">
+                    <h4 class="serif text-2xl font-bold mb-4 text-[#1A2421]">桂竹筍披薩組合</h4>
+                    <p class="text-stone-500 text-sm mb-8 leading-loose h-12 overflow-hidden">南庄農會跨界開發，含手工餅皮與特製醃漬筍絲，口感驚艷。</p>
+                    <div class="flex flex-col gap-6">
+                        <span class="text-2xl font-bold text-[#4F7942] tracking-tighter">NT$ 550 <small class="text-xs text-stone-400 font-normal">/ 2入組</small></span>
+                        <button onclick="addToCart('桂竹筍披薩組合', 550)" class="bg-[#1A2421] text-white py-4 rounded-xl hover:bg-[#4F7942] transition-all duration-300 font-bold tracking-widest serif">加入採筍車</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 購物車側邊欄 -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-white z-[100] shadow-2xl translate-x-full cart-sidebar flex flex-col">
+        <div class="p-8 border-b border-stone-100 flex justify-between items-center bg-[#1A2421]">
+            <h3 class="serif text-xl font-bold text-[#D0E2B7] tracking-widest">您的採筍車</h3>
+            <button onclick="toggleCart()" class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/10 text-white transition">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="cart-content" class="flex-grow overflow-y-auto p-8 space-y-6">
+            <div class="text-center py-32 text-stone-300">
+                <i class="fa-solid fa-basket-shopping text-7xl mb-6 opacity-20"></i>
+                <p class="serif tracking-widest">還沒選購任何山間好物</p>
+            </div>
+        </div>
+
+        <div class="p-10 border-t border-stone-100 bg-[#FCFBF7]">
+            <div class="flex justify-between items-end mb-8">
+                <div class="flex flex-col">
+                    <span class="text-stone-400 text-xs uppercase tracking-widest mb-1">Subtotal</span>
+                    <span class="text-stone-400 text-sm">小計金額</span>
+                </div>
+                <span id="cart-total" class="text-3xl font-bold text-[#1A2421] tracking-tighter">NT$ 0</span>
+            </div>
+            <button class="w-full bg-[#4F7942] text-white py-5 rounded-2xl serif tracking-[0.3em] font-bold hover:bg-[#2D4F1E] transition-all duration-300 shadow-xl shadow-green-900/20 active:scale-95">前往結帳 CHECKOUT</button>
+        </div>
+    </div>
+
+    <!-- AI 客服小助手 -->
+    <div class="fixed bottom-8 right-8 z-[40]">
+        <button onclick="toggleAI()" class="w-16 h-16 bg-[#1A2421] text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 group border border-white/10">
+            <i class="fa-solid fa-comment-dots text-xl group-hover:hidden"></i>
+            <i class="fa-solid fa-mortar-pestle text-xl hidden group-hover:block text-[#D0E2B7]"></i>
+        </button>
+        
+        <div id="ai-chat" class="absolute bottom-20 right-0 w-80 bg-white rounded-3xl shadow-2xl border border-stone-200/50 hidden item-fade-in overflow-hidden">
+            <div class="bg-[#1A2421] text-white p-5 flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-[#4F7942] flex items-center justify-center">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <span class="text-sm font-bold block serif tracking-widest">南庄阿筍</span>
+                    <span class="text-[10px] text-[#D0E2B7] opacity-80 uppercase">AI Assistant Online</span>
+                </div>
+            </div>
+            <div class="p-5 bg-stone-50 h-56 overflow-y-auto text-xs space-y-4" id="ai-messages">
+                <div class="bg-white p-3 rounded-2xl shadow-sm border border-stone-100 leading-loose">
+                    你好！我是阿筍。想知道南庄桂竹筍怎麼煮最好吃嗎？或者是鹿場部落的產地問題？
+                </div>
+            </div>
+            <div class="p-4 border-t border-stone-100 bg-white">
+                <div class="flex gap-2">
+                    <input type="text" id="ai-input" placeholder="問問阿筍料理法..." class="flex-grow text-xs bg-stone-100 p-3 rounded-xl border-none focus:ring-2 focus:ring-[#4F7942] outline-none">
+                    <button onclick="askAI()" class="w-10 h-10 bg-[#1A2421] text-[#D0E2B7] rounded-xl flex items-center justify-center hover:bg-[#4F7942] hover:text-white transition-colors">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer id="contact" class="bg-[#1A2421] text-stone-400 py-24 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16">
+            <div class="col-span-2">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 bg-[#4F7942] rounded-xl flex items-center justify-center text-white">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h1 class="serif text-white text-3xl font-bold tracking-widest">山間拾筍</h1>
+                </div>
+                <p class="text-sm leading-loose mb-10 max-w-md font-light">
+                    我們致力於透過數位賦能，將南庄優質農產品直接送達城市餐桌。支持在地小農，品味最純淨的自然饋贈。每一根鮮筍都帶著鹿場的霧氣。
+                </p>
+                <div class="flex space-x-8 text-2xl">
+                    <a href="#" class="text-white/30 hover:text-[#D0E2B7] transition-all duration-300"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="text-white/30 hover:text-[#D0E2B7] transition-all duration-300"><i class="fa-brands fa-line"></i></a>
+                    <a href="#" class="text-white/30 hover:text-[#D0E2B7] transition-all duration-300"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+            <div>
+                <h5 class="text-white serif font-bold mb-8 text-sm uppercase tracking-[0.2em] border-b border-white/10 pb-2 inline-block">產地資訊</h5>
+                <ul class="text-xs space-y-5 leading-relaxed tracking-wider">
+                    <li class="flex gap-3"><i class="fa-solid fa-location-dot text-[#4F7942]"></i> 苗栗縣南庄鄉鹿場部落</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-calendar-check text-[#4F7942]"></i> 產季：4 月中旬 - 5 月底</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-phone text-[#4F7942]"></i> 037-XXXXXXX</li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white serif font-bold mb-8 text-sm uppercase tracking-[0.2em] border-b border-white/10 pb-2 inline-block">客戶服務</h5>
+                <ul class="text-xs space-y-5 leading-relaxed tracking-wider">
+                    <li><a href="#" class="hover:text-white transition">配送進度追蹤</a></li>
+                    <li><a href="#" class="hover:text-white transition">大量訂購採購方案</a></li>
+                    <li><a href="#" class="hover:text-white transition">常見問題 Q&A</a></li>
+                    <li><a href="#" class="hover:text-white transition">隱私權與退換貨政策</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 text-center text-[10px] uppercase tracking-[0.4em] font-light text-white/20">
+            © 2026 南庄·山間拾筍 Nanzhuang Bamboo Shoots. 由 Gemini Vibe Coding 驅動設計。
+        </div>
+    </footer>
+
+    <script>
+        // --- 購物車邏輯 ---
+        let cart = [];
+        const cartSidebar = document.getElementById('cart-sidebar');
+        const cartContent = document.getElementById('cart-content');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+
+        function toggleCart() {
+            cartSidebar.classList.toggle('translate-x-full');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price, id: Date.now() });
+            updateCart();
+            if (cartSidebar.classList.contains('translate-x-full')) {
+                toggleCart();
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        }
+
+        function updateCart() {
+            cartCount.innerText = cart.length;
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="text-center py-32 text-stone-300">
+                        <i class="fa-solid fa-basket-shopping text-7xl mb-6 opacity-20"></i>
+                        <p class="serif tracking-widest text-sm">還沒選購任何山間好物</p>
+                    </div>`;
+                cartTotal.innerText = `NT$ 0`;
+                return;
+            }
+
+            cartContent.innerHTML = cart.map(item => `
+                <div class="flex justify-between items-center bg-[#FBFBFB] p-5 rounded-2xl border border-stone-100 item-fade-in group">
+                    <div>
+                        <p class="font-bold text-sm text-[#1A2421] mb-1">${item.name}</p>
+                        <p class="text-xs text-[#4F7942] font-bold">NT$ ${item.price}</p>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-stone-300 hover:text-red-500 p-2 transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            cartTotal.innerText = `NT$ ${total.toLocaleString()}`;
+        }
+
+        // --- 產季倒計時邏輯 ---
+        function updateCountdown() {
+            const targetDate = new Date("May 31, 2026 23:59:59").getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "<p class='serif text-sm tracking-widest'>產季已順利結束，敬請期待明年</p>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // --- 模擬 AI 客服 ---
+        function toggleAI() {
+            document.getElementById('ai-chat').classList.toggle('hidden');
+        }
+
+        async function askAI() {
+            const input = document.getElementById('ai-input');
+            const messages = document.getElementById('ai-messages');
+            const question = input.value.trim();
+            
+            if (!question) return;
+
+            messages.innerHTML += `
+                <div class="flex justify-end mb-4">
+                    <p class="bg-[#1A2421] text-[#D0E2B7] p-3 rounded-2xl rounded-tr-none shadow-sm text-[11px] leading-loose max-w-[80%]">
+                        ${question}
+                    </p>
+                </div>`;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            setTimeout(() => {
+                let answer = "這是一個很好的問題！南庄桂竹筍建議先用滾水殺青後，搭配五花肉慢火燉煮，油脂能讓筍質更順口。";
+                if (question.includes('配送')) answer = "我們當天採收後立即處理並真空包裝，透過冷鏈配送，通常 24 小時內可送達指定地點。";
+                if (question.includes('鹿場')) answer = "鹿場部落海拔約 800-1000 公尺，氣候冷涼雲霧多，因此桂竹筍生長較慢，肉質也特別肥厚鮮嫩。";
+                
+                messages.innerHTML += `
+                    <div class="flex justify-start mb-4">
+                        <p class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-stone-100 text-[11px] leading-loose max-w-[80%]">
+                            <span class="font-bold text-[#4F7942] block mb-1 serif">阿筍答覆：</span>
+                            ${answer}
+                        </p>
+                    </div>`;
+                messages.scrollTop = messages.scrollHeight;
+            }, 800);
+        }
+
+        document.getElementById('ai-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') askAI();
+        });
+    </script>
+</body>
+</html>
